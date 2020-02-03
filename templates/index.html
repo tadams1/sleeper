@@ -1,0 +1,15 @@
+<!doctype html>
+<html>
+<head>
+  <title>Draft Report</title>
+</head>
+<body>
+
+  <h1>Draft Report</h1>
+{% for table in tables %}
+            {{titles[loop.index]}}
+            {{ table|safe }}
+{% endfor %}
+
+</body>
+</html>

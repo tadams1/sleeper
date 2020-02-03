@@ -1,0 +1,116 @@
+<!doctype html>
+<html>
+<head>
+  <title>Draft Report</title>
+</head>
+<body>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>  
+	<script src="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.js"></script>
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.css">
+  
+	<nav class="navbar navbar-expand-lg navbar-light bg-light">
+		<a class="navbar-brand" href="#">Navbar</a>
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+		<span class="navbar-toggler-icon"></span>
+	</button>
+
+	<div class="collapse navbar-collapse" id="navbarSupportedContent">
+		<ul class="navbar-nav mr-auto">
+			<li class="nav-item active">
+			<a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link" href="#">Link</a>
+			</li>
+			<li class="nav-item dropdown">
+				<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					Dropdown
+				</a>
+				<div class="dropdown-menu" aria-labelledby="navbarDropdown">
+					<a class="dropdown-item" href="#">Action</a>
+					<a class="dropdown-item" href="#">Another action</a>
+					<div class="dropdown-divider"></div>
+					<a class="dropdown-item" href="#">Something else here</a>
+				</div>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link disabled" href="#">Disabled</a>
+			</li>
+			</ul>
+		</div>
+	</nav>
+	
+
+	<br>
+	<div id='charty' class="chart"></div>
+	<div id='sheet' ></div>
+	
+	{% for table in tables1 %}
+            {{ table|safe }}
+{% endfor %}
+{% for table in tables2 %}
+            {{ table|safe }}
+{% endfor %}
+{% for table in tables3 %}
+            {{ table|safe }}
+{% endfor %}
+{% for table in tables4%}
+            {{ table|safe }}
+{% endfor %}
+<script>
+	var data = {{ data|safe }}
+	var chart_data = {{ chart_data|safe }}
+	var mychart;
+			
+	$(document).ready(function() {
+		mychart = Highcharts.chart('charty',{
+			chart: {renderTo: 'charty', type: 'line', height: 350},
+			title: {text: 'Txn Compare'},
+			xAxis: {categories: ['W1', 'W2', 'W3']},
+			yAxis: {title: {text: 'yAxis PPR PTS'}},
+			series: [{name: 'Test', data: [1,2,3]}]
+		});
+	});
+	
+
+	var container = document.getElementById('sheet');
+	var hot = new Handsontable(container, {
+		data: data,
+		rowHeaders: true,
+		colHeaders: true,
+		filters: true,
+		licenseKey: 'non-commercial-and-evaluation',
+		dropdownMenu: true, 
+		afterSelection: function (row, column, row2, column2, preventScrolling, selectionLayerLevel) {
+			var addid = hot.getDataAtCell(row, 4);
+			var dropid = hot.getDataAtCell(row, 6);
+			var week = hot.getDataAtCell(row, 14);
+			var adddata = [];
+			var dropdata = [];
+			while(mychart.series.length > 0)
+				mychart.series[0].remove(true);
+			for(var i = week; i < 16; i++) {
+				adddata.push(chart_data[addid]['week'+i])
+				dropdata.push(chart_data[dropid]['week'+i])
+			}
+			mychart.addSeries({
+				id: addid,
+				name: "Add: " + hot.getDataAtCell(row, 9),
+				data: adddata
+			}, false);
+			mychart.addSeries({
+				id: dropid,
+				name: "Drop: " + hot.getDataAtCell(row, 12),
+				data: dropdata
+			}, false);
+			
+			mychart.redraw();
+
+		}
+	});
+</script>
+</body>
+</html>
