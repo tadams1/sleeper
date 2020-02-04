@@ -55,6 +55,21 @@
 					<option value="TE">TE</option>
 				</select>	
 			</div>
+			<div class="col-2">
+				<label for="stat-select" class="col-form-label">Stats</label>	
+				<select id="stat-select">
+					<option value="pts_ppr">pts_ppr</option>
+					<option value="pts_std">pts_std</option>
+					<option value="pts_half_ppr">pts_half_ppr</option>
+					<option value="rush_yd">rush_yd</option>
+					<option value="rec_yd">rec_yd</option>
+					<option value="pass_td">rec</option>
+					<option value="rec_td">rec_td</option>
+					<option value="rush_td">rush_td</option>
+					<option value="fum">fum</option>
+					<option value="pass_int">pass_int</option>
+				</select>	
+			</div>
 			<div class="col-3">
 				<label for="playcount" class="col-form-label">Player Count</label>	
 				<input type="number" value="{{ playercount|safe }}" id="playcount">
@@ -68,7 +83,7 @@
 	<div id='sheet' ></div>
 <script>
 	function reload() {
-		window.location.href = "players?position=" + $("#position-select option:selected").text() + '&playercount=' + $("#playcount").val()  ;
+		window.location.href = "players?position=" + $("#position-select option:selected").text() + '&playercount=' + $("#playcount").val() + '&stattype=' + $("#stat-select option:selected").text();
 	}
 	var chart_id = {{ chartID|safe }}
 	var series = {{ series|safe }}
